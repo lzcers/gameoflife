@@ -11,34 +11,27 @@
     </style>
 </head>
 <body>
-<button id="btnStart" onclick="start()">Start</button>
+<!--<button id="btnStart" onclick="start()">Start</button>-->
 <canvas id="myCanvas" width="500" height="500"></canvas>
 <script type="text/javascript">
     'use strict';
     // 设置细胞大小
     var cellSize = 10;
+    var matrixSize = 50;
+    var canvasSize = 500;
     var myCanvas = document.getElementById('myCanvas');
     myCanvas.addEventListener("mousemove", mousePassCanvas);
     var c = myCanvas.getContext('2d');
     // 初始化细胞矩阵
-    var cellMatrix = initCellMatrix(50);
+    var cellMatrix = initCellMatrix(matrixSize);
     //  初始化画布
-    c.fillStyle='#eeeeee';
-    c.fillRect(0, 0, 500, 500);
+//    c.fillStyle='#eeeeee'; // 灰色背景色
+    c.fillRect(0, 0, canvasSize, canvasSize);
 
-    function deepcopy(obj) {
-        let out = [], length = obj.length;
-        for (let i = 0; i < length; i++) {
-            if (obj[i] instanceof Array){
-                out[i] = deepcopy(obj[i]);
-            }
-            else out[i] = obj[i];
-        }
-        return out;
-    }
-    function start() {
-        setInterval(Main,50);
-    }
+//    function start() {
+//        setInterval(Main,50);
+//    }
+    setInterval(Main,50);
     function Main() {
         let tempM = deepcopy(cellMatrix);
         liveStatusUpdate(tempM);
@@ -50,12 +43,22 @@
         for (let i = 0; i < size; i++) {
             array[i] = new Array(size);
             for(let j = 0; j < size; j++) {
-                array[i][j] = 0; // 默认细胞死亡
+//                array[i][j] = 0; // 默认细胞死亡
+                array[i][j] = Math.round(Math.random());
             }
         }
         return array;
     }
-
+    function deepcopy(obj) {
+        let out = [], length = obj.length;
+        for (let i = 0; i < length; i++) {
+            if (obj[i] instanceof Array){
+                out[i] = deepcopy(obj[i]);
+            }
+            else out[i] = obj[i];
+        }
+        return out;
+    }
     // 绘制网格
     function drawGrid(interval, size) {
         for(let i = 0; i <= size; i = i + interval) {
@@ -118,7 +121,8 @@
     }
     // 杀死细胞
     function killCell(_x, _y) {
-        c.fillStyle='#eeeeee';
+//        c.fillStyle='#eeeeee'; // 采用背景色填充
+        c.fillStyle='#ffffff';
         c.fillRect(_x * cellSize, _y * cellSize, cellSize, cellSize);
     }
     // 矩阵映射至canvas网格
@@ -133,11 +137,11 @@
     function mousePassCanvas(event) {
         let X = event.offsetX;
         let Y = event.offsetY;
-        let offsetMatrixX = Math.floor(X/10);
-        let offsetMatrixY = Math.floor(Y/10)
+        let offsetMatrixX = Math.floor(X/cellSize);
+        let offsetMatrixY = Math.floor(Y/cellSize);
         cellMatrix[offsetMatrixX][offsetMatrixY] = 1;
         mapMatrix(cellMatrix);
-        console.log('clientX:'+ Math.floor(X/10) + 'clientY:' + Math.floor(Y/10));
+        console.log('clientX:'+ Math.floor(X/cellSize) + 'clientY:' + Math.floor(Y/cellSize));
     }
 </script>
 </body>
